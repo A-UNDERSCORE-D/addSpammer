@@ -5,33 +5,22 @@ import yaml
 import time
 from copy import copy
 
-DEFAULT_CONFIG = {
-    "client_id": "",
-    "client_secret": "",
+
+config = {
+    "client_id": os.environ.get("client_id"),
+    "client_secret": os.environ.get("client_secret"),
     "user_agent": "linux:cyborgupdatebot:0.1 (by /u/A_UNDEDRSCORE-D)",
-    "username": "",
-    "password": "",
+    "username": os.environ.get("username"),
+    "password": os.environ.get("password"),
     "last_run": 0,
-    "baduser_fair": "",
-    "config_sub": "",
-    "config_post_id": "",
-    "config_wiki_page": "",
-    "config_comment": "#spamlist",
-    "config_update_text": ""
+    "baduser_fair": os.environ.get("baduser_fair"),
+    "config_sub": os.environ.get("config_sub"),
+    "config_post_id": os.environ.get("config_post_id"),
+    "config_wiki_page": os.environ.get("config_wiki_page"),
+    "config_comment": os.environ.get("config_comment"),
+    "config_update_text": os.environ.get("config_update_text")
 }
 
-config_filename = "config.json"
-
-
-def loadconfig():
-    if not os.path.exists(config_filename):
-        with open(config_filename, "w") as f:
-            json.dump(DEFAULT_CONFIG, f, indent=2)
-
-    with open(config_filename) as f:
-        return json.load(f)
-
-config = loadconfig()
 assert config["password"], "This seems to be a firstrun. Please fill out config.json with the required data"
 reddit = praw.Reddit(**config)
 me = reddit.user
@@ -41,11 +30,6 @@ config_thread = reddit.submission(id=config["config_post_id"])
 
 
 sublist = [sub for sub in me.moderator_subreddits()]
-
-
-def saveconfig():
-    with open(config_filename, "w") as f:
-        json.dump(config, f, indent=2)
 
 
 def edit_page(badusers: set):
