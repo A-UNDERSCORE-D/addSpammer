@@ -1,5 +1,4 @@
 import praw
-import json
 import os
 import yaml
 import time
