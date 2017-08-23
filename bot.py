@@ -12,7 +12,7 @@ DEFAULT_CONFIG = {
     "username": "",
     "password": "",
     "last_run": 0,
-    "baduser_fair": "",
+    "baduser_flair": "",
     "config_sub": "",
     "config_post_id": "",
     "config_wiki_page": "",
