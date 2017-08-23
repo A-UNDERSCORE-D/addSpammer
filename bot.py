@@ -67,12 +67,9 @@ def checksub(subr) -> set:
             if flairlog.target_fullname and flairlog.target_fullname.startswith("t3_"):
                 submission = reddit.submission(id=flairlog.target_fullname[3:])
                 flair = submission.link_flair_text
-                if flair:
-                    print(f"FLAIR: {flair} BADUSER_FLAIR: {config['baduser_flair']} "
-                          f"MATCH: {flair == config['baduser_flair']}")
                 if flair == config["baduser_flair"]:
                     returnusers.add(flairlog.target_author)
-                    submission.flair.select(None)
+                    submission.delete()
 
     return returnusers
 
