@@ -87,7 +87,7 @@ def checksub(subr) -> set:
                 flair = submission.link_flair_text
                 if flair == config["baduser_flair"]:
                     returnusers.add(flairlog.target_author)
-                    submission.delete()
+                    submission.mod.remove(spam=True)
 
     return returnusers
 
@@ -103,7 +103,6 @@ def run():
         rerun = set()
         global rerun
     while True:
-        # global rerun
         badusers = set()
         for sub in sublist:
             print("CHECKING:", sub)
