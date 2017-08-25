@@ -124,7 +124,7 @@ def run():
 
         else:
             print("no changes need to be made")
-        time.sleep(60)
+        time.sleep(60 * 5)
 
 
 if __name__ == '__main__':
