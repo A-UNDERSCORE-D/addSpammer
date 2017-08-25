@@ -97,12 +97,12 @@ def makepost():
 
 
 def run():
+
     if config["last_run"] == 0:
         config["last_run"] = time.time()
         saveconfig()
-        rerun = set()
+    rerun = set()
     while True:
-        global rerun
         badusers = set()
         for sub in sublist:
             print("CHECKING:", sub)
