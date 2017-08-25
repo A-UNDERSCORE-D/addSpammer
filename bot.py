@@ -1,4 +1,5 @@
 import praw
+import prawcore
 import json
 import os
 import yaml
@@ -48,7 +49,7 @@ def saveconfig():
         json.dump(config, f, indent=2)
 
 
-def edit_page(badusers: set):
+def editpage(badusers: set):
     config_wiki = config_sub.wiki[config["config_wiki_page"]]
     lines = config_wiki.content_md.split("\r\n")
     linetoedit = -1
@@ -68,7 +69,7 @@ def edit_page(badusers: set):
 
     # make sure we only update things if we need to
     if nicks != newnicks:
-        lines[linetoedit] = line[:13] + yaml.safe_dump(list(newnicks), default_style="'", default_flow_style=True)
+        lines[linetoedit] = line[:13] + yaml.safe_dump(list(newnicks), default_style="'", default_flow_style=True)[:2]
         newpage_md = "\r\n".join(lines)
         config_wiki.edit(newpage_md, revision="Automated from flairBot")
         return True
@@ -99,19 +100,29 @@ def run():
     if config["last_run"] == 0:
         config["last_run"] = time.time()
         saveconfig()
+        rerun = set()
+        global rerun
     while True:
+        # global rerun
         badusers = set()
         for sub in sublist:
             print("CHECKING:", sub)
             badusers.update(checksub(sub))
+        if rerun:
+            badusers.update(rerun)
         if badusers:
             print(badusers)
-            if edit_page(badusers):
+            try:
+                if editpage(badusers):
+                    config["last_run"] = time.time()
+                    saveconfig()
+                    print("Changes made. requesting reload.")
+                    makepost()
+                    rerun.clear()
+            except prawcore.BadRequest:
+                print("Caught 400 error. retrying on next run")
+                rerun.update(badusers)
 
-                config["last_run"] = time.time()
-                saveconfig()
-                print("Changes made. requesting reload.")
-                makepost()
         else:
             print("no changes need to be made")
         time.sleep(60)
