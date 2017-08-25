@@ -101,8 +101,8 @@ def run():
         config["last_run"] = time.time()
         saveconfig()
         rerun = set()
-        global rerun
     while True:
+        global rerun
         badusers = set()
         for sub in sublist:
             print("CHECKING:", sub)
