@@ -69,7 +69,7 @@ def editpage(badusers: set):
 
     # make sure we only update things if we need to
     if nicks != newnicks:
-        lines[linetoedit] = line[:13] + yaml.safe_dump(list(newnicks), default_style="'", default_flow_style=True)[:1]
+        lines[linetoedit] = line[:13] + yaml.safe_dump(list(newnicks), default_style="'", default_flow_style=True)
         newpage_md = "\r\n".join(lines)
         config_wiki.edit(newpage_md, revision="Automated from flairBot")
         return True
