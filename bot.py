@@ -121,8 +121,14 @@ def run():
             except prawcore.BadRequest:
                 print("Caught 400 error. retrying on next run")
                 rerun.update(badusers)
+            except prawcore.ServerError as e:
+                print("Caught a server error {}. retrying on next run.".format(e))
+                rerun.update(badusers)
             except prawcore.ResponseException as e:
                 print("Caught a server error {}. retrying on next run".format(e))
+                rerun.update(badusers)
+            except prawcore.PrawcoreException as e:
+                print("Caught generic error: {}. Retrying on next run".format(e))
                 rerun.update(badusers)
 
         else:
