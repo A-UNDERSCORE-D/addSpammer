@@ -121,6 +121,9 @@ def run():
             except prawcore.BadRequest:
                 print("Caught 400 error. retrying on next run")
                 rerun.update(badusers)
+            except prawcore.ResponseException as e:
+                print("Caught a server error {}. retrying on next run".format(e))
+                rerun.update(badusers)
 
         else:
             print("no changes need to be made")
