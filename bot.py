@@ -74,8 +74,8 @@ def editpage(badusers: set):
 
     # make sure we only update things if we need to
     if nicks != newnicks:
-        lines[confstart:confend] = ["author_name: " + yaml.safe_dump(list(newnicks), default_style="'",
-                                                                     default_flow_style=True)[:-1]]
+        newlist = yaml.safe_dump(list(newnicks), default_style="'", default_flow_style=True)
+        lines[confstart:confend] = ["author_name: " + newlist[:-1]]
         newpage_md = "\r\n".join(lines)
         config_wiki.edit(newpage_md, revision="Automated from flairBot")
         return True
