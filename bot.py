@@ -52,12 +52,15 @@ def saveconfig():
 def editpage(badusers: set):
     config_wiki = config_sub.wiki[config["config_wiki_page"]]
     lines = config_wiki.content_md.split("\r\n")
+
+    # Loop over the config lines, look for the marker, save the location, keep looping, look for a close to the list
+    # mark that location and break
     confstart, confend = 0, 0
     for i, line in enumerate(lines):
         if line.startswith("#spamlist") and not confstart:
             confstart = i + 1
-        if line == "---" and confstart and not confend:
-            confend = i - 2
+        if line.endswith("']") and confstart and not confend:
+            confend = i + 1
             break
 
     rawconf = "\n".join(lines[confstart:confend])[13:]
