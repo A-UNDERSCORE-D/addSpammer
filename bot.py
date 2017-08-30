@@ -52,14 +52,16 @@ def saveconfig():
 def editpage(badusers: set):
     config_wiki = config_sub.wiki[config["config_wiki_page"]]
     lines = config_wiki.content_md.split("\r\n")
-    linetoedit = -1
+    confstart, confend = 0, 0
     for i, line in enumerate(lines):
-        if line.startswith(config["config_comment"]):
-            linetoedit = i + 1
+        if line.startswith("#spamlist") and not confstart:
+            confstart = i + 1
+        if line == "---" and confstart and not confend:
+            confend = i - 2
             break
-    assert linetoedit != -1
-    line = lines[linetoedit]
-    nicks = yaml.safe_load(line[13:])
+
+    rawconf = "\n".join(lines[confstart:confend])[13:]
+    nicks = yaml.safe_load(rawconf)
 
     # this is to force uniqueness
     newnicks = copy(nicks)
@@ -69,7 +71,8 @@ def editpage(badusers: set):
 
     # make sure we only update things if we need to
     if nicks != newnicks:
-        lines[linetoedit] = line[:13] + yaml.safe_dump(list(newnicks), default_style="'", default_flow_style=True)
+        lines[confstart:confend] = ["author_name: " + yaml.safe_dump(list(newnicks), default_style="'",
+                                                                     default_flow_style=True)[:-1]]
         newpage_md = "\r\n".join(lines)
         config_wiki.edit(newpage_md, revision="Automated from flairBot")
         return True
